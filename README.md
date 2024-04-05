@@ -1,78 +1,34 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/omXkVCQu)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=14610593&assignment_repo_type=AssignmentRepo)
-# Welcome to GitHub
+# RAG 기능을 갖춘 Private LLM 서비스 솔루션 POC
 
-캡스톤 팀 생성을 축하합니다.
+기업들이 LLM(Large Language Model)을 활용하여 사내 데이터를 기반으로 정확하고 관련성 높은 응답을 생성할 수 있도록 지원하는 솔루션입니다.
+비전문가도 쉽게 이용할 수 있는 UI 를 제공하고,
+RAG(Retrieval Augmented Generation) 기술을 활용하여 최신 정보를 반영하고 환각 현상을 최소화하는 것이 주요 목표입니다.
 
-## 팀소개 및 페이지를 꾸며주세요.
+## 개발
 
-- 프로젝트 소개
-  - 프로젝트 설치방법 및 데모, 사용방법, 프리뷰등을 readme.md에 작성.
-  - Api나 사용방법등 내용이 많을경우 wiki에 꾸미고 링크 추가.
+- [Backend](backend)
+- [Frontend](frontend)
+- [AI Gateway](gateway)
 
-- 팀페이지 꾸미기
-  - 프로젝트 소개 및 팀원 소개
-  - index.md 예시보고 수정.
+## 주요 기능
 
-- GitHub Pages 리파지토리 Settings > Options > GitHub Pages 
-  - Source를 marster branch
-  - Theme Chooser에서 태마선택
-  - 수정후 팀페이지 확인하여 점검.
+1. **데이터 가공 및 정제**: 고객이 보유한 다양한 형식(Excel, PDF 등)의 데이터를 효과적으로 가공하고 정제합니다.
+2. **사용자 친화적인 데이터 업로드 환경**: 비 개발자도 쉽게 데이터를 업로드할 수 있는 직관적인 인터페이스를 제공합니다.
+3. **데이터 업데이트 용이성**: 고객이 새로운 데이터를 추가하거나 기존 데이터를 수정할 수 있는 편리한 방법을 제공합니다.
+4. **LLM 통합**: 업로드된 데이터를 효과적으로 LLM 과 통합하며, 클라우드 또는 자체 호스팅 모델 중 선택할 수 있습니다.
+5. **챗봇 플러그인**: 사내 메신저 또는 웹에 통합할 수 있는 챗봇 형태의 플러그인을 제공합니다.
 
-**팀페이지 주소** -> https://kookmin-sw.github.io/ '{{자신의 리파지토리 아이디}}'
+## 기술적 고려 사항
 
-**예시)** 2023년 0조  https://kookmin-sw.github.io/capstone-2023-00/
-
-
-## 내용에 아래와 같은 내용들을 추가하세요.
-
-### 1. 프로잭트 소개
-
-프로젝트
-
-### 2. 소개 영상
-
-프로젝트 소개하는 영상을 추가하세요
-
-### 3. 팀 소개
-
-팀을 소개하세요.
-
-팀원정보 및 담당이나 사진 및 SNS를 이용하여 소개하세요.
-
-### 4. 사용법
-
-소스코드제출시 설치법이나 사용법을 작성하세요.
-
-### 5. 기타
-
-추가적인 내용은 자유롭게 작성하세요.
-
-
-## Markdown을 사용하여 내용꾸미기
-
-Markdown은 작문을 스타일링하기위한 가볍고 사용하기 쉬운 구문입니다. 여기에는 다음을위한 규칙이 포함됩니다.
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-자세한 내용은 [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Support or Contact
-
-readme 파일 생성에 추가적인 도움이 필요하면 [도움말](https://help.github.com/articles/about-readmes/) 이나 [contact support](https://github.com/contact) 을 이용하세요.
+- 데이터 클리닝: 특수 문자, 한글 인코딩, 노이즈 제거 등의 작업을 수행합니다.
+- 청킹 기법 최적화: 문서를 의미 있는 단위로 분할하기 위해 다양한 청킹 기법을 활용합니다.
+- 장문 컨텍스트 처리: RAPTOR와 같은 기술을 활용하여 장문 컨텍스트 처리를 최적화합니다.
+- 파라미터 튜닝: 청크 크기, 청크 간 중첩 등의 파라미터를 최적화합니다.
+- 다양한 파서/로더 활용: 데이터 유형에 따라 적절한 파서와 로더를 선택합니다.
+- 구문 분석 및 추출: 텍스트, 표, 이미지에 대한 구문 분석 및 추출 기능을 제공합니다.
+- Retriever 최적화: Multi-query Retriever, Sparse Retriever, Ensemble Retriever 등을 활용하여 Retriever를 최적화합니다.
+- 메타데이터 인덱싱: 효과적인 검색을 위해 메타데이터를 인덱싱합니다.
+- ANN 알고리즘 선택: 대규모 유사도 검색을 위해 적절한 ANN 알고리즘을 선택합니다.
+- 가설 문서 임베딩(HyDE): 가설 문서 임베딩 기술을 활용하여 검색 성능을 향상시킵니다.
+- Reranking: 검색 결과의 순위를 최적화하기 위해 Reranking 기술을 활용합니다.
+- 파운데이션 모델 실험 및 선택: 다양한 파운데이션 모델을 실험하고 최적의 모델을 선택합니다.
