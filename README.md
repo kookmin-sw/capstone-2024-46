@@ -4,6 +4,8 @@
 비전문가도 쉽게 이용할 수 있는 UI 를 제공하고,
 RAG(Retrieval Augmented Generation) 기술을 활용하여 최신 정보를 반영하고 환각 현상을 최소화하는 것이 주요 목표입니다.
 
+![image](https://github.com/kookmin-sw/capstone-2024-46/assets/55116920/34916c62-5afe-4168-855d-216833fd74ee)
+
 ## 개발
 
 - [Backend](backend)
@@ -32,3 +34,20 @@ RAG(Retrieval Augmented Generation) 기술을 활용하여 최신 정보를 반�
 - 가설 문서 임베딩(HyDE): 가설 문서 임베딩 기술을 활용하여 검색 성능을 향상시킵니다.
 - Reranking: 검색 결과의 순위를 최적화하기 위해 Reranking 기술을 활용합니다.
 - 파운데이션 모델 실험 및 선택: 다양한 파운데이션 모델을 실험하고 최적의 모델을 선택합니다.
+
+## 팀 소개
+
+이민철 (20163137) - AI / Infra
+
+이민재 (20191638) - AI / Backend
+
+조준형 (20163161) - Frontend
+
+---
+**발표자료**
+
+https://docs.google.com/presentation/d/1UQqhioYG4VUtG_1cfW0BHoaqoJQ1ZtvtfxqkwCO-X9w/edit?usp=sharing
+
+**회의록**
+
+https://drive.google.com/file/d/1s4uVzUczXE2Rv0l6_2OpIq_ngJTHEtDW/view
