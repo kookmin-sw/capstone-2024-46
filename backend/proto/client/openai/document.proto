@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package com.openai.api.v1;
+
+import "openapiv3/annotations.proto";
+
+option go_package = "private-llm-backend/pkg/client/openai;openai";
+
+option (openapi.v3.document) = {
+  info: {
+    title: "OpenAI API";
+    version: "1.0";
+    description: "";
+  }
+  servers: [
+    {
+      url: "https://api.openai.com";
+    }
+  ],
+  components: {
+    security_schemes: {
+      additional_properties: [
+        {
+          name: "BearerAuth";
+          value: {
+            security_scheme: {
+              type: "http";
+              scheme: "bearer";
+              description: "OPENAI_API_KEY";
+            }
+          }
+        }
+      ]
+    }
+  },
+  // global security
+  security: [
+    {
+      additional_properties: [
+        {
+          name: "BearerAuth";
+          value: {};
+        }
+      ]
+    }
+  ]
+};

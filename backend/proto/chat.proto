@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "private-llm-backend/internal/api/v1;api";
+
+// Playground Chat
+service PlaygroundChatService {
+  // Generate a chat conversation message.
+  rpc CreateChatConversation(CreateChatConversationRequest) returns (CreateChatConversationResponse) {
+    option (google.api.http) = {
+      post : "/v1/playground/chat/conversation"
+      body : "*"
+    };
+  }
+
+  // Creates a new thread.
+  rpc CreateThread(google.protobuf.Empty) returns (CreateThreadResponse) {
+    option (google.api.http) = {
+      post: "/v1/threads"
+    };
+  }
+}
+
+message ConversationMessage {
+  string content = 1 [(google.api.field_behavior) = REQUIRED];
+  MessageRole role = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message CreateChatConversationRequest {
+  // system version for testing
+  string system_version = 1;
+  // array of messages
+  repeated ConversationMessage messages = 2 [(google.api.field_behavior) = REQUIRED];
+  // thread id
+  string thread_id = 3 [(google.api.field_behavior) = REQUIRED];
+}
+
+message CreateChatConversationResponse {
+  // A unique identifier for the chat conversation.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The generated chat conversation message.
+  ConversationMessage message = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // The Unix timestamp (in seconds) of when the chat completion was created.
+  google.protobuf.Timestamp create_time = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // This fingerprint represents the backend configuration that the model runs with.
+  string system_fingerprint = 4;
+
+  // The object type, which is always `chat_completion`.
+  ObjectType object_type = 5 [(google.api.field_behavior) = REQUIRED];
+}
+
+message CreateThreadResponse {
+  string thread_id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+enum MessageRole {
+  // Not used.
+  MESSAGE_ROLE_UNSPECIFIED = 0;
+  // The user
+  MESSAGE_ROLE_USER = 1;
+  // The assistant
+  MESSAGE_ROLE_ASSISTANT = 2;
+}
+
+enum ObjectType {
+  // Not used.
+  OBJECT_TYPE_UNSPECIFIED = 0;
+  // `chat_completion`
+  OBJECT_TYPE_CHAT_COMPLETION = 1;
+}

@@ -1,0 +1,165 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Private LLM API
+    description: Playground Chat
+    contact:
+        name: Blast Team
+        email: develop@blast-team.com
+    version: 0.0.1
+paths:
+    /v1/playground/chat/conversation:
+        post:
+            tags:
+                - PlaygroundChatService
+            description: Generate a chat conversation message.
+            operationId: PlaygroundChatService_CreateChatConversation
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateChatConversationRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateChatConversationResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/threads:
+        post:
+            tags:
+                - PlaygroundChatService
+            description: Creates a new thread.
+            operationId: PlaygroundChatService_CreateThread
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateThreadResponse'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        ConversationMessage:
+            required:
+                - content
+                - role
+            type: object
+            properties:
+                content:
+                    type: string
+                role:
+                    enum:
+                        - unspecified
+                        - user
+                        - assistant
+                    type: string
+                    format: enum
+        CreateChatConversationRequest:
+            required:
+                - messages
+                - threadId
+            type: object
+            properties:
+                systemVersion:
+                    type: string
+                    description: system version for testing
+                messages:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ConversationMessage'
+                    description: array of messages
+                threadId:
+                    type: string
+                    description: thread id
+        CreateChatConversationResponse:
+            required:
+                - id
+                - message
+                - createTime
+                - objectType
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: A unique identifier for the chat conversation.
+                message:
+                    allOf:
+                        - $ref: '#/components/schemas/ConversationMessage'
+                    description: The generated chat conversation message.
+                createTime:
+                    type: string
+                    description: The Unix timestamp (in seconds) of when the chat completion was created.
+                    format: date-time
+                systemFingerprint:
+                    type: string
+                    description: This fingerprint represents the backend configuration that the model runs with.
+                objectType:
+                    enum:
+                        - unspecified
+                        - chat_completion
+                    type: string
+                    description: The object type, which is always `chat_completion`.
+                    format: enum
+        CreateThreadResponse:
+            required:
+                - threadId
+            type: object
+            properties:
+                threadId:
+                    type: string
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+    securitySchemes:
+        ApiKeyAuth:
+            type: apiKey
+            description: API Key based authentication.
+            name: X-API-KEY
+            in: header
+        BearerAuth:
+            type: http
+            description: Put your JWT token here.
+            scheme: bearer
+            bearerFormat: JWT
+security:
+    - ApiKeyAuth: []
+tags:
+    - name: PlaygroundChatService

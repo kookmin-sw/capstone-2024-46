@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "openapiv3/annotations.proto";
+
+option go_package = "private-llm-backend/internal/api/v1;api";
+
+option (openapi.v3.document) = {
+  info: {
+    title: "Private LLM API";
+    version: "0.0.1";
+    description: "";
+    contact: {
+      name: "Blast Team";
+      email: "develop@blast-team.com";
+    }
+  }
+  components: {
+    security_schemes: {
+      additional_properties: [
+        {
+          name: "ApiKeyAuth";
+          value: {
+            security_scheme: {
+              type: "apiKey";
+              name: "X-API-KEY";
+              in: "header";
+              description: "API Key based authentication.";
+            }
+          }
+        },
+        {
+          name: "BearerAuth";
+          value: {
+            security_scheme: {
+              type: "http";
+              scheme: "bearer";
+              bearer_format: "JWT";
+              description: "Put your JWT token here.";
+            }
+          }
+        }
+      ]
+    }
+  },
+  // global security
+  security: [
+    {
+      additional_properties: [
+        {
+          name: "ApiKeyAuth";
+          value: {};
+        }
+      ]
+    }
+  ]
+};

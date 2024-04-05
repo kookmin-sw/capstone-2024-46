@@ -1,0 +1,17 @@
+{
+  "name": "client-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "example.ts",
+  "scripts": {
+    "start": "ts-node example.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "devDependencies": {
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+  }
+}

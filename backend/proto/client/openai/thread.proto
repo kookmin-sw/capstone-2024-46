@@ -1,0 +1,442 @@
+syntax = "proto3";
+
+package com.openai.api.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/struct.proto";
+import "openapiv3/annotations.proto";
+
+option go_package = "private-llm-backend/pkg/client/openai;openai";
+
+// Threads API
+service ThreadService {
+  // Creates a thread.
+  rpc CreateThread(google.protobuf.Empty) returns (Thread) {
+    option (google.api.http) = {
+      post: "/v1/threads"
+    };
+    option (openapi.v3.operation) = {
+      parameters: [
+        {
+          parameter: {
+            name: "OpenAI-Beta",
+            in: "header",
+            required: true,
+            schema: {
+              schema:{type: "string" default: {string: "assistants=v1"}}
+            }
+          }
+        }
+      ]
+    };
+  }
+
+  // Creates a run within a thread
+  rpc CreateRun(CreateRunRequest) returns (Run) {
+    option (google.api.http) = {
+      post: "/v1/threads/{thread_id}/runs"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      parameters: [
+        {
+          parameter: {
+            name: "OpenAI-Beta",
+            in: "header",
+            required: true,
+            schema: {
+              schema:{type: "string" default: {string: "assistants=v1"}}
+            }
+          }
+        }
+      ]
+    };
+  }
+
+  // Lists messages for a given thread.
+  rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse) {
+    option (google.api.http) = {
+      get: "/v1/threads/{thread_id}/messages"
+    };
+    option (openapi.v3.operation) = {
+      parameters: [
+        {
+          parameter: {
+            name: "OpenAI-Beta",
+            in: "header",
+            required: true,
+            schema: {
+              schema:{type: "string" default: {string: "assistants=v1"}}
+            }
+          }
+        }
+      ]
+    };
+  }
+
+  // Creates a new message within a specified thread.
+  rpc CreateMessage(CreateMessageRequest) returns (ThreadMessage) {
+    option (google.api.http) = {
+      post: "/v1/threads/{thread_id}/messages"
+      body: "*"
+    };
+    option (openapi.v3.operation) = {
+      parameters: [
+        {
+          parameter: {
+            name: "OpenAI-Beta",
+            in: "header",
+            required: true,
+            schema: {
+              schema:{type: "string" default: {string: "assistants=v1"}}
+            }
+          }
+        }
+      ]
+    };
+  }
+
+  rpc RetrieveRun(google.protobuf.Empty) returns (Run) {
+    option (google.api.http) = {
+      get: "/v1/threads/{thread_id}/runs/{run_id}"
+    };
+    option (openapi.v3.operation) = {
+      parameters: [
+        {
+          parameter: {
+            name: "OpenAI-Beta",
+            in: "header",
+            required: true,
+            schema: {
+              schema:{type: "string" default: {string: "assistants=v1"}}
+            }
+          }
+        }
+      ]
+    };
+  }
+}
+
+message Thread {
+  // A unique identifier for the created thread.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The Unix timestamp (in seconds) of when the thread was created.
+  uint32 created_at = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Set of 16 key-value pairs that can be attached to an object.
+  google.protobuf.Struct metadata = 3;
+
+  // The object type, which is always `thread`.
+  string object = 4 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for creating a run within a thread.
+message CreateRunRequest {
+  // The ID of the assistant to use for executing this run.
+  string assistant_id = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Overrides the instructions of the assistant. This is useful for
+  // modifying behavior on a per-run basis.
+  string instructions = 3;
+
+  // Appends additional instructions at the end of the instructions for the run.
+  // Useful for modifying behavior without overriding other instructions.
+  string additional_instructions = 4;
+
+  // Set of 16 key-value pairs for storing additional information in a structured format.
+  google.protobuf.Struct metadata = 5;
+
+  // The ID of the model to be used for this run. Overrides the model associated with the assistant.
+  string model = 6;
+
+  // List of tools the assistant can use for this run. Useful for modifying behavior per run.
+  repeated Tool tools = 7; // Tool message definition needs to be provided based on models.
+}
+
+// Response message representing a run.
+message Run {
+  // Unique identifier for the run.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // Assistant ID used for execution of this run.
+  string assistant_id = 2 [(google.api.field_behavior) = REQUIRED];
+
+  // Unix timestamp (in seconds) for when the run was created.
+  uint32 created_at = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // Unix timestamp (in seconds) for when the run was cancelled. Optional.
+  uint32 cancelled_at = 4;
+
+  // Unix timestamp (in seconds) for when the run was completed. Optional.
+  uint32 completed_at = 5;
+
+  // Unix timestamp (in seconds) for when the run will expire.
+  uint32 expires_at = 6 [(google.api.field_behavior) = REQUIRED];
+
+  // Unix timestamp (in seconds) for when the run failed. Optional.
+  uint32 failed_at = 7;
+
+  // List of File IDs the assistant used for this run.
+  repeated string file_ids = 8;
+
+  // Instructions the assistant used for this run.
+  string instructions = 9 [(google.api.field_behavior) = REQUIRED];
+
+  // Last error associated with this run. Null if there are no errors.
+  LastError last_error = 10;
+
+  // Set of 16 key-value pairs for storing additional information in a structured format.
+  google.protobuf.Struct metadata = 11;
+
+  // Model used by the assistant for this run.
+  string model = 12 [(google.api.field_behavior) = REQUIRED];
+
+  // Always `thread.run`. Indicates the object type.
+  string object = 13 [(google.api.field_behavior) = REQUIRED];
+
+  // Action required to continue the run. Null if no action is required.
+  RequiredAction required_action = 14;
+
+  // Unix timestamp (in seconds) for when the run was started. Optional.
+  uint32 started_at = 15;
+
+  // Current status of the run (e.g., queued, in_progress, completed).
+  RunStatus status = 16 [(google.api.field_behavior) = REQUIRED];
+
+  // Thread ID that was executed on as part of this run.
+  string thread_id = 17  [(google.api.field_behavior) = REQUIRED];
+
+  // List of tools used by the assistant for this run.
+  repeated Tool tools = 18;
+
+  // Usage statistics related to the run. Null if run is not in a terminal state.
+  Usage usage = 19;
+}
+
+message Tool {
+  ToolType type = 1;
+
+  message FunctionDefinition {
+    string name = 1 [(google.api.field_behavior) = REQUIRED];
+    string description = 2;
+    google.protobuf.Struct parameters = 3;
+  }
+
+  FunctionDefinition function = 2;
+}
+
+message LastError {
+  // Error code associated with the last error.
+  LastErrorCode code = 1[(google.api.field_behavior) = REQUIRED];
+
+  // Error message associated with the last error.
+  string message = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message Function {
+  // The arguments that the model expects you to pass to the function.
+  string arguments = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The name of the function.
+  string name = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message RequiredActionFunctionToolCall {
+  // The ID of the tool call.
+  string id = 1[(google.api.field_behavior) = REQUIRED];
+
+  // The function definition.
+  Function function = 2[(google.api.field_behavior) = REQUIRED];
+}
+
+message RequiredActionSubmitToolOutputs {
+  // A list of the relevant tool calls.
+  repeated RequiredActionFunctionToolCall tool_calls = 1;
+}
+
+
+message RequiredAction {
+  // Action required to continue the run.
+  RequiredActionSubmitToolOutputs submit_tool_outputs = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // For now, this is always `submit_tool_outputs`
+  RequiredActionType type = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message Usage {
+  // Number of completion tokens used over the course of the run.
+  int32 completion_tokens = 1 [(google.api.field_behavior) = REQUIRED];
+  // Number of prompt tokens used over the course of the run.
+  int32 prompt_tokens = 2 [(google.api.field_behavior) = REQUIRED];
+  // Total number of tokens used (prompt + completion).
+  int32 total_tokens = 3 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for listing messages within a thread.
+message ListMessagesRequest {
+  // The ID of the thread for which messages are being listed.
+  string thread_id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // A cursor for pagination, specifying the object ID to list messages after.
+  string after = 2;
+
+  // A cursor for pagination, specifying the object ID to list messages before.
+  string before = 3;
+
+  // Limit on the number of messages to be returned.
+  int32 limit = 4;
+
+  // Order of messages based on their creation timestamp. Can be 'asc' or 'desc'.
+  string order = 5;
+}
+
+// Response message containing a list of messages.
+message ListMessagesResponse {
+  // List of messages in the specified thread.
+  repeated ThreadMessage data = 1;
+  string first_id = 2;
+  string last_id = 3;
+  bool has_more = 4;
+}
+
+message TextAnnotation {
+  TextAnnotationType type = 1 [(google.api.field_behavior) = REQUIRED];
+
+  int32 end_index = 2 [(google.api.field_behavior) = REQUIRED];
+
+  int32 start_index = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // The text in the message content that needs to be replaced.
+  string text = 4 [(google.api.field_behavior) = REQUIRED];
+
+  message TextAnnotationFileCitationFileCitation{
+    // The ID of the specific File the citation is from.
+    string file_id = 1 [(google.api.field_behavior) = REQUIRED];
+    // The specific quote in the file.
+    string quote = 2 [(google.api.field_behavior) = REQUIRED];
+  }
+
+  // file_citation will be returned when type is `file_citation`
+  TextAnnotationFileCitationFileCitation file_citation = 5;
+
+  message TextAnnotationFilePathFilePath {
+    string file_id = 1 [(google.api.field_behavior) = REQUIRED];
+  }
+
+  // file_path will be returned when type is `file_path`
+  TextAnnotationFilePathFilePath file_path = 6;
+}
+
+message Text {
+  repeated TextAnnotation annotations = 1;
+  string value = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message ImageFile {
+  // ID of the image in the message content.
+  string file_id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message Content {
+  ContentType type = 1 [(google.api.field_behavior) = REQUIRED];
+  // text will be returned when type is `text`
+  Text text = 2;
+
+  // image_file will be returned when type is `image_file`
+  ImageFile image_file = 3;
+}
+
+// Representation of a message within a thread.
+message ThreadMessage {
+  // Unique identifier for the message.
+  string id = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // ID of the assistant that authored this message.
+  string assistant_id = 2;
+
+  // Content of the message, including text and/or images.
+  repeated Content content = 3; // Definition of Content message is assumed to be provided elsewhere.
+
+  // Unix timestamp (in seconds) for when the message was created.
+  uint32 created_at = 4 [(google.api.field_behavior) = REQUIRED];
+
+  // List of file IDs associated with this message. Maximum of 10 files.
+  repeated string file_ids = 5;
+
+  // Optional. Metadata associated with the message as key-value pairs.
+  google.protobuf.Struct metadata = 6;
+
+  // Object type, always `thread.message`.
+  string object = 7 [(google.api.field_behavior) = REQUIRED];
+
+  // The role of the entity that produced the message, either `user` or `assistant`.
+  ThreadMessageRole role = 8 [(google.api.field_behavior) = REQUIRED];
+
+  // The run ID associated with the authoring of this message.
+  string run_id = 9;
+
+  // The thread ID to which this message belongs.
+  string thread_id = 10 [(google.api.field_behavior) = REQUIRED];
+}
+
+message CreateMessageRequest {
+  // The content of the new message.
+  string content = 2 [(google.api.field_behavior) = REQUIRED];
+
+  enum Role {
+    user = 0;
+  }
+
+  // The role of the entity creating the message. Currently, only 'user' is supported.
+  Role role = 3 [(google.api.field_behavior) = REQUIRED];
+
+  // A list of File IDs the message should use, supporting up to 10 files.
+  repeated string file_ids = 4;
+
+  // Optional metadata as key-value pairs for additional information about the message.
+  google.protobuf.Struct metadata = 5;
+}
+
+enum ToolType {
+  code_interpreter = 0;
+  retrieval = 1;
+  function = 2;
+}
+
+enum RunStatus {
+  queued = 0;
+  in_progress = 1;
+  requires_action = 2;
+  cancelling = 3;
+  cancelled = 4;
+  failed = 5;
+  completed = 6;
+  expired = 7;
+}
+
+enum LastErrorCode {
+  server_error = 0;
+  rate_limit_exceeded = 1;
+}
+
+enum RequiredActionType {
+  submit_tool_outputs = 0;
+}
+
+enum ThreadMessageRole {
+  user = 0;
+  assistant = 1;
+}
+
+enum ContentType {
+  text = 0;
+  image_file = 1;
+}
+
+enum TextAnnotationType {
+  file_citation = 0;
+  file_path = 1;
+}

@@ -1,0 +1,13 @@
+FROM gcr.io/distroless/static-debian12@sha256:2eb0c793360d26aace9b88fb9cf1a4f680140e7fb7d68d86de1fe63dbc1a7660
+
+WORKDIR /app
+
+ENV PORT=8080
+EXPOSE 8080
+
+COPY docs/swagger-ui/ docs/swagger-ui/
+COPY configs/ configs/
+
+COPY server server
+
+CMD ["/app/server"]

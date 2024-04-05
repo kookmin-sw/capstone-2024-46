@@ -1,0 +1,10 @@
+*
+
+!cmd/
+!configs/
+!docs/swagger-ui/
+!internal/
+!pkg/
+!go.mod
+!go.sum
+!server

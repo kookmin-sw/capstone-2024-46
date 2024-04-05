@@ -1,0 +1,5 @@
+{
+  "AWS_SECRET_MANAGER_NAME": "dev/private-llm-backend",
+  "AWS_REGION": "ap-northeast-2",
+  "SENTRY_DSN": ""
+}
