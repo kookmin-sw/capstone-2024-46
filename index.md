@@ -6,6 +6,9 @@ RAG(Retrieval Augmented Generation) 기술을 활용하여 최신 정보를 반�
 
 ## 개발
 
+<img width="703" alt="image" src="https://github.com/kookmin-sw/capstone-2024-46/assets/25102702/3da0a9a1-3c89-45db-9670-9efaf9fe3de3">
+
+
 - [Backend](backend)
 - [Frontend](frontend)
 - [AI Gateway](gateway)
